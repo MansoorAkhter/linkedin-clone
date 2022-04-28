@@ -41,14 +41,7 @@ function Login() {
             photoURL: profilePic,
           })
           .then(() => {
-            dispatch(
-              login({
-                email: userAuth.user.email,
-                uid: userAuth.user.uid,
-                displayName: name,
-                photoUrl: profilePic,
-              })
-            );
+            alert("User register successfully")
           });
       })
       .catch((error) => alert(error));
