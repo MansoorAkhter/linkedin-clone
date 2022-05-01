@@ -13,6 +13,8 @@ const Sidebar = () => {
       <p>{topic}</p>
     </div>)
   };
+
+  console.log("user-->>>",user)
   return (
     <div className="sidebar">
       <div className="sidebar_top">

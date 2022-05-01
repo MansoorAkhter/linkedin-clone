@@ -11,29 +11,35 @@ import InputOption from "../input option/InputOption";
 import Post from "../post/Post";
 import { db } from "../firebase/firebase";
 import firebase from "firebase/compat/app";
+import { useSelector } from "react-redux";
+import { selectUser } from "../features/userSlice";
+import FlipMove from 'react-flip-move';
 
 const Feed = () => {
+  const user = useSelector(selectUser);
   const [input, setInput] = useState("");
   const [post, setPost] = useState([]);
 
   useEffect(() => {
-    db.collection("posts").orderBy("timestamp", "desc").onSnapshot((snapshot) =>
-      setPost(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          data: doc.data(),
-        }))
-      )
-    );
+    db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) =>
+        setPost(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+          }))
+        )
+      );
   }, []);
 
   const sendPost = (e) => {
     e.preventDefault();
     db.collection("posts").add({
-      name: "Mansoor Akhter",
-      description: "this is a test",
+      name: user.displayName,
+      description: user.email,
       message: input,
-      photoUrl: "",
+      photoUrl: user.photoUrl || "",
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
     });
     setInput("");
@@ -69,15 +75,18 @@ const Feed = () => {
       </div>
 
       {/* POSTS */}
-      {post.map(({ id, data: { name, description, message, photoUrl } }) => (
-        <Post
-          key={id}
-          name={name}
-          description={description}
-          message={message}
-          photoUrl={photoUrl}
-        />
-      ))}
+
+      <FlipMove>
+        {post.map(({ id, data: { name, description, message, photoUrl } }) => (
+          <Post
+            key={id}
+            name={name}
+            description={description}
+            message={message}
+            photoUrl={photoUrl}
+          />
+        ))}
+      </FlipMove>
     </div>
   );
 };
